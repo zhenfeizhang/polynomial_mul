@@ -19,6 +19,9 @@ using namespace std;
 
 void print256_num(__m256i var);
 
+
+/* ******************** school book area ************************ */
+
 void
 grade_school_mul(
     uint16_t        *res1,  /* out - a * b in Z[x], must be length 2N */
@@ -47,25 +50,35 @@ __m256i_grade_school_mul_32(
 int test_SB_32();
 
 
+/* ******************** karatsuba area ************************ */
 
 static void
-karatsuba(
+__mm256i_karatsuba_SB(
     uint16_t        *r, /* out - a * b in Z[x], must be length 2n */
     uint16_t        *t, /*  in - n coefficients of scratch space */
     uint16_t const  *a, /*  in - polynomial */
     uint16_t const  *b, /*  in - polynomial */
-    uint16_t const   n, /*  in - number of coefficients in a and b */
-    uint16_t const   k);/*  in - degree of schoolbook multiplication */
+    uint16_t const   n);/*  in - number of coefficients in a and b */
+
 
 static void
-karatsuba_32(
+__mm256i_karatsuba__mm256_SB(
     uint16_t        *r, /* out - a * b in Z[x], must be length 2n */
     uint16_t        *t, /*  in - n coefficients of scratch space */
     uint16_t const  *a, /*  in - polynomial */
     uint16_t const  *b, /*  in - polynomial */
-    uint16_t const   n, /*  in - number of coefficients in a and b */
-    uint16_t const   k); /*  in - degree of schoolbook multiplication */
+    uint16_t const   n);/*  in - number of coefficients in a and b */
+int test_karatsuba();
 
+/* ******************** toom 3 area ************************ */
+
+/*
+ * toom3 multiplication with uint16_t coefficients,
+ * only usable for degree less than 96,
+ * uses uint16_t based school book multiplications when
+ * degree drops below 32
+ * okay speed
+ */
 int
 toom3(
     uint16_t        *r, /* out - a * b in Z[x], must be length 2n */
@@ -75,13 +88,38 @@ toom3(
     uint16_t const   n);/*  in - number of coefficients in a and b */
 
 
+
+/*
+ * toom3 multiplication with uint16_t coefficients,
+ * only usable for degree less than 96,
+ * uses vectorized school book multiplications (avx2)
+ * when degree drops below 32
+ * good speed
+ */
 int
-__mm256i_toom3(
+toom3__mm256i_SB(
     uint16_t        *r, /* out - a * b in Z[x], must be length 2n */
     uint16_t        *t, /*  in - n coefficients of scratch space */
     uint16_t const  *a, /*  in - polynomial */
     uint16_t const  *b, /*  in - polynomial */
     uint16_t const   n);/*  in - number of coefficients in a and b */
+
+
+/*
+ * vectorized toom3 multiplication with avx2 coefficients,
+ * only usable for degree less than 96,
+ * uses vectorized school book multiplications (avx2)
+ * when degree drops below 32
+ * fastest
+ */
+int
+__mm256i_toom3__mm256i_SB(
+    uint16_t        *r, /* out - a * b in Z[x], must be length 2n */
+    uint16_t        *t, /*  in - n coefficients of scratch space */
+    uint16_t const  *a, /*  in - polynomial */
+    uint16_t const  *b, /*  in - polynomial */
+    uint16_t const   n);/*  in - number of coefficients in a and b */
+
 
 int test_toom3();
 #endif /*SIMD_POLY_H_*/

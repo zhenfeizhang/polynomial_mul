@@ -9,21 +9,29 @@ void print256_num(__m256i var)
            val[8], val[9], val[10], val[11],
            val[12], val[13], val[14], val[15]);
 }
-
+void print256_num_mod_q(__m256i var)
+{
+    uint16_t *val = (uint16_t*) &var;
+    printf("%i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i\n",
+            val[0]%(2048), val[1]%(2048), val[2]%(2048), val[3]%(2048),
+            val[4]%(2048), val[5]%(2048), val[6]%(2048), val[7]%(2048),
+            val[8]%(2048), val[9]%(2048), val[10]%(2048), val[11]%(2048),
+            val[12]%(2048), val[13]%(2048), val[14]%(2048), val[15]%(2048));
+}
 void print32poly(uint16_t* poly)
 {
     uint16_t i;
     for (i=0;i<8;i++)
-        printf("%d, ", poly[i]);
+        printf("%d, ", poly[i]%2048);
     printf("\n");
     for (i=8;i<16;i++)
-        printf("%d, ", poly[i]);
+        printf("%d, ", poly[i]%2048);
     printf("\n");
     for (i=16;i<24;i++)
-        printf("%d, ", poly[i]);
+        printf("%d, ", poly[i]%2048);
     printf("\n");
     for (i=24;i<32;i++)
-        printf("%d, ", poly[i]);
+        printf("%d, ", poly[i]%2048);
     printf("\n\n");
 }
 
@@ -72,16 +80,16 @@ int main()
     srand(3);
 
 
-    test_toom3();
+//    test_toom3();
 
 
+//    __mm256i_toom3__mm256i_SB(r,buf,a,b,test_dim);
 
-
-    a256 = (__m256i *)a;
+/*    a256 = (__m256i *)a;
     b256 = (__m256i *)b;
     r256 = (__m256i *)r;
     buf256 = (__m256i *)buf;
-    for(i=0; i< test_dim;i++)
+*/    for(i=0; i< test_dim;i++)
     {
         a[i] = rand()&0x07FF;
         b[i] = rand()&0x07FF;
@@ -100,8 +108,10 @@ int main()
         printf("%d, ", b[i]);
     }
     printf("\n");
-
-    __mm256i_toom3(r, buf,a, b, test_dim);
+    printf("\n");
+    printf("\n");
+    printf("\n");
+    __mm256i_toom3__mm256i_SB(r, buf,a, b, test_dim);
 
     printf("final:");
     print32poly(r);
@@ -111,6 +121,28 @@ int main()
     print32poly(r+128);
     print32poly(r+160);
 
+
+    toom3__mm256i_SB (r, buf,a, b, test_dim);
+    printf("final:");
+    print32poly(r);
+    print32poly(r+32);
+    print32poly(r+64);
+    print32poly(r+96);
+    print32poly(r+128);
+    print32poly(r+160);
+
+
+    grade_school_mul(r,a, b, test_dim);
+    printf("final:");
+    print32poly(r);
+    print32poly(r+32);
+    print32poly(r+64);
+    print32poly(r+96);
+    print32poly(r+128);
+    print32poly(r+160);
+
+    test_toom3();
+    test_karatsuba();
   /*
     for (test_dim=8;test_dim<33;test_dim++)
     {
