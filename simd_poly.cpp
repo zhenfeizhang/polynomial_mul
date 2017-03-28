@@ -36,6 +36,8 @@ void print32poly(uint16_t* poly)
 }
 
 
+
+
 int main()
 {
 
@@ -73,150 +75,35 @@ int main()
     r64 = (uint64_t*)r;
     fout<<test_dim<<" ";
 
-    test_dim = 93;
+    test_dim = 380;
 
 
 
     srand(3);
 
 
-//    test_toom3();
-
-
-//    __mm256i_toom3__mm256i_SB(r,buf,a,b,test_dim);
-
-/*    a256 = (__m256i *)a;
-    b256 = (__m256i *)b;
-    r256 = (__m256i *)r;
-    buf256 = (__m256i *)buf;
-*/    for(i=0; i< test_dim;i++)
+    for(i=0; i< test_dim;i++)
     {
         a[i] = rand()&0x07FF;
         b[i] = rand()&0x07FF;
 
     }
-    printf("a: ");
-    for(i=0; i< test_dim;i++)
+
+
+    toom4__mm256i_toom3(r, buf, a, b, test_dim);
+    __mm256i_toom4__mm256i_toom3(r, buf, a, b, test_dim);
+    printf("\n");
+    grade_school_mul(r2, a, b, test_dim);
+/*    for(i=0; i< test_dim*2;i++)
     {
-        printf("%d, ", a[i]);
+        printf("%d %d, %d, %d \n", i, r[i]%2048, r2[i]%2048, (r[i]-r2[i])%2048);
     }
     printf("\n");
-
-    printf("b: ");
-    for(i=0; i< test_dim;i++)
-    {
-        printf("%d, ", b[i]);
-    }
-    printf("\n");
-    printf("\n");
-    printf("\n");
-    printf("\n");
-    __mm256i_toom3__mm256i_SB(r, buf,a, b, test_dim);
-
-    printf("final:");
-    print32poly(r);
-    print32poly(r+32);
-    print32poly(r+64);
-    print32poly(r+96);
-    print32poly(r+128);
-    print32poly(r+160);
-
-
-    toom3__mm256i_SB (r, buf,a, b, test_dim);
-    printf("final:");
-    print32poly(r);
-    print32poly(r+32);
-    print32poly(r+64);
-    print32poly(r+96);
-    print32poly(r+128);
-    print32poly(r+160);
-
-
-    grade_school_mul(r,a, b, test_dim);
-    printf("final:");
-    print32poly(r);
-    print32poly(r+32);
-    print32poly(r+64);
-    print32poly(r+96);
-    print32poly(r+128);
-    print32poly(r+160);
-
-    test_toom3();
-    test_karatsuba();
-  /*
-    for (test_dim=8;test_dim<33;test_dim++)
-    {
-        ss1 = 0;
-        ss2 = 0;
-        cout<<"dimension: "<<test_dim<<" ";
-        for (j=0;j<1000;j++)
-        {
-            for(i=0; i< test_dim;i++)
-            {
-                a[i] = rand()&0x07FF;
-                b[i] = rand()&0x07FF;
-            }
-
-
-            start = clock();
-            grade_school_mul(r, a, b, test_dim);
-            end = clock();
-            ss1 += (float)(end-start);
-
-
-            start = clock();
-            __m256i_grade_school_mul_32(r, buf,a, b, test_dim);
-            end = clock();
-            ss2 += (float)(end-start);
-        }
-        cout<<ss1<<" "<<ss2<<" "<<endl;
-    }
-
-
-
-    for (test_dim=33;test_dim<34;test_dim++)
-    {
-        ss1 = 0;
-        ss2 = 0;
-        cout<<"dimension: "<<test_dim<<" ";
-        for (j=0;j<1000;j++)
-        {
-            memset(a, 0, sizeof(uint16_t)*400);
-            memset(b, 0, sizeof(uint16_t)*400);
-            for(i=0; i< test_dim;i++)
-            {
-                a[i] = rand()&0x07FF;
-                b[i] = rand()&0x07FF;
-            }
-
-//            __mm256_karatsuba_768(r, buf, a, b, test_dim);
-            start = clock();
-            karatsuba(r, buf, a, b, test_dim, 32);
-            end = clock();
-            ss1 += (float)(end-start);
-
-
-            start = clock();
-            karatsuba_32(r2, buf, a, b, test_dim, 32);
-            end = clock();
-            ss2 += (float)(end-start);
-
-            for (i=0;i<test_dim*2-1;i++)
-            {
-                if (r[i]!=r2[i])
-                {
-                    printf("error\n");
-
-                for (j=0;j<test_dim*2-1;j++)
-                            {
-                    printf("%d %d %d %d\n", j, r[j],r2[j], r[j]-r2[j]);
-                            }
-                    return 0;}
-            }
-        }
-        cout<<ss1<<" "<<ss2<<" "<<endl;
-    }
 */
+    test_toom4();
+//    test_toom3();
+//    test_karatsuba();
+
 
     return 0;
 

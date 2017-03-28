@@ -358,7 +358,7 @@ __mm256i_toom3__mm256i_SB(
 {
     if (n>96)
     {
-        printf("degree exceeds the maximum (96) allowed\n");
+        printf("degree %d exceeds the maximum (96) allowed\n", n);
         return -1;
     }
     if (n<=32)

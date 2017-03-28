@@ -122,4 +122,56 @@ __mm256i_toom3__mm256i_SB(
 
 
 int test_toom3();
+
+
+/* ******************** toom 3 area ************************ */
+
+/*
+ * toom4 multiplication with uint16_t coefficients,
+ * only usable for degree less than 384,
+ * uses uint16_t based school book multiplications when
+ * degree drops below 96
+ * available for testing; really slow
+ */
+
+int
+toom4_SB(
+    uint16_t        *r, /* out - a * b in Z[x], must be length 2n */
+    uint16_t        *t, /*  in - n coefficients of scratch space */
+    uint16_t const  *a, /*  in - polynomial */
+    uint16_t const  *b, /*  in - polynomial */
+    uint16_t const   n);/*  in - number of coefficients in a and b */
+
+/*
+ * toom4 multiplication with uint16_t coefficients,
+ * only usable for degree less than 384,
+ * uses __mm256i_toom3 multiplications when
+ * degree drops below 96
+ * okay speed
+ */
+int
+toom4__mm256i_toom3(
+    uint16_t        *r, /* out - a * b in Z[x], must be length 2n */
+    uint16_t        *t, /*  in - n coefficients of scratch space */
+    uint16_t const  *a, /*  in - polynomial */
+    uint16_t const  *b, /*  in - polynomial */
+    uint16_t const   n);/*  in - number of coefficients in a and b */
+
+
+/*
+ * toom4 multiplication with __mm256i coefficients,
+ * only usable for degree less than 384,
+ * uses __mm256i_toom3 multiplications when
+ * degree drops below 96
+ * fastest option
+ */
+int
+__mm256i_toom4__mm256i_toom3(
+    uint16_t        *r, /* out - a * b in Z[x], must be length 2n */
+    uint16_t        *t, /*  in - n coefficients of scratch space */
+    uint16_t const  *a, /*  in - polynomial */
+    uint16_t const  *b, /*  in - polynomial */
+    uint16_t const   n);/*  in - number of coefficients in a and b */
+
+int test_toom4();
 #endif /*SIMD_POLY_H_*/
