@@ -52,7 +52,7 @@ int test_SB_32();
 
 /* ******************** karatsuba area ************************ */
 
-static void
+void
 __mm256i_karatsuba_SB(
     uint16_t        *r, /* out - a * b in Z[x], must be length 2n */
     uint16_t        *t, /*  in - n coefficients of scratch space */
@@ -61,13 +61,22 @@ __mm256i_karatsuba_SB(
     uint16_t const   n);/*  in - number of coefficients in a and b */
 
 
-static void
-__mm256i_karatsuba__mm256_SB(
+void
+__mm256i_karatsuba__mm256_toom4(
     uint16_t        *r, /* out - a * b in Z[x], must be length 2n */
     uint16_t        *t, /*  in - n coefficients of scratch space */
     uint16_t const  *a, /*  in - polynomial */
     uint16_t const  *b, /*  in - polynomial */
     uint16_t const   n);/*  in - number of coefficients in a and b */
+
+void
+karatsuba_old(
+    uint16_t        *r, /* out - a * b in Z[x], must be length 2n */
+    uint16_t        *t, /*  in - n coefficients of scratch space */
+    uint16_t const  *a, /*  in - polynomial */
+    uint16_t const  *b, /*  in - polynomial */
+    uint16_t const   n);/*  in - number of coefficients in a and b */
+
 int test_karatsuba();
 
 /* ******************** toom 3 area ************************ */

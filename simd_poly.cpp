@@ -1,4 +1,9 @@
 #include "simd_poly.h"
+uint64_t rdtsc(){
+    unsigned int lo,hi;
+    __asm__ __volatile__ ("rdtsc" : "=a" (lo), "=d" (hi));
+    return ((uint64_t)hi << 32) | lo;
+}
 
 void print256_num(__m256i var)
 {
@@ -35,75 +40,70 @@ void print32poly(uint16_t* poly)
     printf("\n\n");
 }
 
+void test_ntru()
+{
+    uint16_t N;     // dimension
+    uint16_t *a;    // first polynomial
+    uint16_t *b;    // second polynomial
+    uint16_t *buf;    // buffer
+    uint16_t *r;    // result
+    uint16_t i,j;
+    float ss0, ss1,ss2, ss3;
+    clock_t start, end;
+    uint64_t startc, endc;
+    N = 768;
+    a = (uint16_t*) malloc (2*N*sizeof(uint16_t));
+    b = (uint16_t*) malloc (2*N*sizeof(uint16_t));
+    buf = (uint16_t*) malloc (4*N*sizeof(uint16_t));
+    r = (uint16_t*) malloc (4*N*sizeof(uint64_t));
 
+    ss2 = 0;
+    ss3 = 0;
+    for (j=0;j<1000;j++)
+    {
+        memset(a, 0, 2*N*sizeof(uint16_t));
+        memset(b, 0, 2*N*sizeof(uint16_t));
+        memset(buf, 0, 4*N*sizeof(uint16_t));
+        memset(r, 0,4*N*sizeof(uint16_t));
+        for(i=0; i< N;i++)
+        {
+            a[i] = rand()&0x07FF;
+            b[i] = rand()&0x07FF;
+        }
+
+        start = clock();startc = rdtsc();
+        __mm256i_karatsuba__mm256_toom4(r, buf, a, b, N);
+        endc = rdtsc();
+        end = clock();
+        ss3 += (float)(end-start);
+        ss0 += (endc-startc);
+        cout<<(float)(end-start)<<" "<< (endc-startc)<<" ";
+
+
+        start = clock();startc = rdtsc();
+        karatsuba_old(r, buf, a, b, N);
+        endc = rdtsc();
+        end = clock();
+        ss2 += (float)(end-start);
+        cout<<(float)(end-start)<<" "<<(endc-startc)<<endl;
+        ss1 +=(endc-startc);
+    }
+    cout<<endl;
+    cout<<ss3<<" "<<ss0<<" "<<ss2<<" "<<ss1<<endl;
+}
 
 
 int main()
 {
 
-    uint16_t N;     // dimension
-    uint16_t q;     // q = 2048
-    uint16_t *a;    // first polynomial
-    uint16_t *b;    // second polynomial
-    uint64_t *a64;    // first polynomial
-    uint64_t *b64;    // second polynomial
-    uint64_t *buf64;  // buffer
-    uint16_t *buf;    // result
-    uint16_t *r;    // result
-    uint16_t *r2;
-    uint64_t *r64;    // result
-    uint16_t i,j;
-    uint16_t test_dim;
-    __m256i   *a256;
-    __m256i   *b256;
-    __m256i   *r256;
-    __m256i   *buf256;
-
-    test_SB_32();
-
-    clock_t start, end;
-    double karat, scht, toomt,toomtrec;
-    ofstream fout;
-    float ss1,ss2;
-    fout.open("result.txt");
-    N = 256*4;
-    a = (uint16_t*) malloc (2*N*sizeof(uint16_t));
-    b = (uint16_t*) malloc (2*N*sizeof(uint16_t));
-    buf = (uint16_t*) malloc (4*N*sizeof(uint16_t));
-    r = (uint16_t*) malloc (4*N*sizeof(uint64_t));
-    r2 = (uint16_t*) malloc (4*N*sizeof(uint64_t));
-    r64 = (uint64_t*)r;
-    fout<<test_dim<<" ";
-
-    test_dim = 380;
-
-
-
     srand(3);
-
-
-    for(i=0; i< test_dim;i++)
-    {
-        a[i] = rand()&0x07FF;
-        b[i] = rand()&0x07FF;
-
-    }
-
-
-    toom4__mm256i_toom3(r, buf, a, b, test_dim);
-    __mm256i_toom4__mm256i_toom3(r, buf, a, b, test_dim);
-    printf("\n");
-    grade_school_mul(r2, a, b, test_dim);
-/*    for(i=0; i< test_dim*2;i++)
-    {
-        printf("%d %d, %d, %d \n", i, r[i]%2048, r2[i]%2048, (r[i]-r2[i])%2048);
-    }
-    printf("\n");
-*/
+/*
+    test_SB_32();
+    test_toom3();
     test_toom4();
-//    test_toom3();
-//    test_karatsuba();
-
+    test_karatsuba();
+*/
+    test_ntru();
 
     return 0;
 
