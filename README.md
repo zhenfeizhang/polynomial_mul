@@ -19,4 +19,9 @@ less than 32
 * karatsuba multiplicaiton for polynomials with degree 
 < 768. 
 
-Current status: working on Toom-4.
+Benchmark on NTRU polynomials:
+karatsuba_old: 298315 cycles
+this program:  147621 cycles
+
+
+
