@@ -361,7 +361,7 @@ __mm256i_toom3__mm256i_SB(
         printf("degree %d exceeds the maximum (96) allowed\n", n);
         return -1;
     }
-    if (n<=32)
+    if (n<32)
     {
         grade_school_mul(r, a, b, n);
         return 0;
@@ -390,8 +390,10 @@ __mm256i_toom3__mm256i_SB(
      *           = a2     * b2
      */
 
-    __m256i_grade_school_mul_32(t, buf, a, b, s);
-    __m256i_grade_school_mul_32(t8, buf, a2, b2, s);
+    grade_school_mul(t, a, b, s);
+    grade_school_mul(t8, a2, b2, s);
+//    __m256i_grade_school_mul_32(t, buf, a, b, s);
+//    __m256i_grade_school_mul_32(t8, buf, a2, b2, s);
 
     /*
      * t2 = a(1) *b(1)
@@ -451,8 +453,11 @@ __mm256i_toom3__mm256i_SB(
     _mm256_storeu_si256((__m256i *)r3+1, mr3b);
 
 
-    __m256i_grade_school_mul_32(t2, buf,r, r2, s);
-    __m256i_grade_school_mul_32(t4, buf,r1, r3, s);
+//    __m256i_grade_school_mul_32(t2, buf,r, r2, s);
+//    __m256i_grade_school_mul_32(t4, buf,r1, r3, s);
+
+    grade_school_mul(t2, r, r2, s);
+    grade_school_mul(t4, r1, r3, s);
 
 
     /*
@@ -568,8 +573,8 @@ __mm256i_toom3__mm256i_SB(
     _mm256_storeu_si256((__m256i *)r5, mr5a);
     _mm256_storeu_si256((__m256i *)r5+1, mr5b);
 
-
-    __m256i_grade_school_mul_32(t6, buf, r4, r5, s);;
+    grade_school_mul(t6, r4, r5, s);
+//    __m256i_grade_school_mul_32(t6, buf, r4, r5, s);;
 
     /*
      * t6 = w1 + 4*w3

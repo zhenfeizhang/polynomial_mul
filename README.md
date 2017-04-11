@@ -1,6 +1,7 @@
 # polynomial_mul
 fast polynomial multiplications using avx2
 
+usage: g++ *.cpp -mavx2 -O3
 
 This piece of code handles polynomial multiplications modulo q with 
 q = 2^k for k < 14. It is most efficient for polynomials whose degrees
@@ -20,8 +21,8 @@ less than 32
 < 768. 
 
 Benchmark on NTRU polynomials:
-karatsuba_old: 298315 cycles
-this program:  147621 cycles
-
+karatsuba_old: 290 k cycles
+this program (with avx2):  130 k cycles
+this program (w/o avx2):  180 k cycles
 
 

@@ -18,7 +18,33 @@
 using namespace std;
 
 void print256_num(__m256i var);
+uint64_t rdtsc();
 
+/* ******************** using all optimizations ***************** */
+
+void
+__mm256i_karatsuba__mm256_toom4(
+    uint16_t        *r, /* out - a * b in Z[x], must be length 2n */
+    uint16_t        *t, /*  in - n coefficients of scratch space */
+    uint16_t const  *a, /*  in - polynomial */
+    uint16_t const  *b, /*  in - polynomial */
+    uint16_t const   n);/*  in - number of coefficients in a and b */
+
+
+/* ******************** without avx-2 ************************** */
+
+void
+karatsuba_toom4(
+    uint16_t        *r, /* out - a * b in Z[x], must be length 2n */
+    uint16_t        *t, /*  in - n coefficients of scratch space */
+    uint16_t const  *a, /*  in - polynomial */
+    uint16_t const  *b, /*  in - polynomial */
+    uint16_t const   n);/*  in - number of coefficients in a and b */
+
+
+
+
+/* ******************** other functions ***************************/
 
 /* ******************** school book area ************************ */
 
@@ -61,8 +87,9 @@ __mm256i_karatsuba_SB(
     uint16_t const   n);/*  in - number of coefficients in a and b */
 
 
+
 void
-__mm256i_karatsuba__mm256_toom4(
+karatsuba_old(
     uint16_t        *r, /* out - a * b in Z[x], must be length 2n */
     uint16_t        *t, /*  in - n coefficients of scratch space */
     uint16_t const  *a, /*  in - polynomial */
@@ -70,7 +97,7 @@ __mm256i_karatsuba__mm256_toom4(
     uint16_t const   n);/*  in - number of coefficients in a and b */
 
 void
-karatsuba_old(
+karatsuba_old16(
     uint16_t        *r, /* out - a * b in Z[x], must be length 2n */
     uint16_t        *t, /*  in - n coefficients of scratch space */
     uint16_t const  *a, /*  in - polynomial */
@@ -133,7 +160,7 @@ __mm256i_toom3__mm256i_SB(
 int test_toom3();
 
 
-/* ******************** toom 3 area ************************ */
+/* ******************** toom 4 area ************************ */
 
 /*
  * toom4 multiplication with uint16_t coefficients,
@@ -143,8 +170,25 @@ int test_toom3();
  * available for testing; really slow
  */
 
+
 int
 toom4_SB(
+    uint16_t        *r, /* out - a * b in Z[x], must be length 2n */
+    uint16_t        *t, /*  in - n coefficients of scratch space */
+    uint16_t const  *a, /*  in - polynomial */
+    uint16_t const  *b, /*  in - polynomial */
+    uint16_t const   n);/*  in - number of coefficients in a and b */
+
+/*
+ * toom4 multiplication with uint16_t coefficients,
+ * only usable for degree less than 384,
+ * uses toom3 multiplications when
+ * degree drops below 96
+ * okay speed
+ */
+
+int
+toom4_toom3(
     uint16_t        *r, /* out - a * b in Z[x], must be length 2n */
     uint16_t        *t, /*  in - n coefficients of scratch space */
     uint16_t const  *a, /*  in - polynomial */
