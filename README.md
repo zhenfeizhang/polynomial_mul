@@ -21,8 +21,8 @@ less than 32
 < 768. 
 
 Benchmark on NTRU polynomials:
-karatsuba_old: 290 k cycles
-this program (with avx2):  130 k cycles
-this program (w/o avx2):  180 k cycles
+* karatsuba_old: 290 k cycles
+* this program (with avx2):  130 k cycles
+* this program (w/o avx2):  180 k cycles
 
 
